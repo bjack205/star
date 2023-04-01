@@ -5,16 +5,134 @@
 
 #include "quaternion.h"
 
+#include <stdio.h>
+
 #include "math.h"
 
-void qmat_inv(double* qinv, const double* q) {
-  qinv[0] = q[0];
-  qinv[1] = -q[1];
-  qinv[2] = -q[2];
-  qinv[3] = -q[3];
+double star_QuatNorm(const double* q) {
+  return sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
 }
 
-void qmat_quat2rotmat(double* Q, const double* q) {
+double star_QuatNormSquared(const double* q) {
+  return q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3];
+}
+
+double star_QuatVecNorm(const double* q) {
+  return sqrt(q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
+}
+double star_QuatVecNormSquared(const double* q) {
+  return q[1] * q[1] + q[2] * q[2] + q[3] * q[3];
+}
+
+void star_QuatIdentity(double* q) {
+  q[0] = 1;
+  q[1] = 0;
+  q[2] = 0;
+  q[3] = 0;
+}
+
+void star_QuatNormalize(double* q_normalized, double* q) {
+  double n = 1 / star_QuatNorm(q);
+  q_normalized[0] = q[0] * n;
+  q_normalized[1] = q[1] * n;
+  q_normalized[2] = q[2] * n;
+  q_normalized[3] = q[3] * n;
+}
+
+void star_QuatFlip(double* q_flip, const double* q) {
+  q_flip[0] = -q[0];
+  q_flip[1] = -q[1];
+  q_flip[2] = -q[2];
+  q_flip[3] = -q[3];
+}
+
+void star_QuatVec(double* vec, const double* q) {
+  vec[0] = q[1];
+  vec[1] = q[2];
+  vec[2] = q[3];
+}
+
+void star_QuatConjugate(double* q_conj, const double* q) {
+  q_conj[0] = q[0];
+  q_conj[1] = -q[1];
+  q_conj[2] = -q[2];
+  q_conj[3] = -q[3];
+}
+
+void star_QuatInverse(double* qinv, const double* q) {
+  double n = 1 / star_QuatNormSquared(q);
+  qinv[0] = q[0] * n;
+  qinv[1] = -q[1] * n;
+  qinv[2] = -q[2] * n;
+  qinv[3] = -q[3] * n;
+}
+
+void star_QuatCompose(double* q3, const double* q1, const double* q2) {
+  q3[0] = q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3];
+  q3[1] = q1[1] * q2[0] + q1[0] * q2[1] + q1[2] * q2[3] - q1[3] * q2[2];
+  q3[2] = q1[2] * q2[0] + q1[3] * q2[1] + q1[0] * q2[2] - q1[1] * q2[3];
+  q3[3] = q1[3] * q2[0] + q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1];
+}
+
+void star_QuatComposeLeft(double* q3, const double* q1, const double* q2) {
+  q3[0] = q2[0] * q1[0] - q2[1] * q1[1] - q2[2] * q1[2] - q2[3] * q1[3];
+  q3[1] = q2[1] * q1[0] + q2[0] * q1[1] + q2[2] * q1[3] - q2[3] * q1[2];
+  q3[2] = q2[2] * q1[0] + q2[3] * q1[1] + q2[0] * q1[2] - q2[1] * q1[3];
+  q3[3] = q2[3] * q1[0] + q2[0] * q1[3] + q2[1] * q1[2] - q2[2] * q1[1];
+}
+
+void star_QuatLogm(double* phi, const double* q) {
+  double s = q[0];
+  double theta = star_QuatVecNorm(q);
+  double M;
+  if (theta < 1e-6) {
+    if (fabs(s) < STAR_EPS) {
+      phi[0] = 0;
+      phi[1] = 0;
+      phi[2] = 0;
+      return;
+    }
+    M = (1 - theta * theta / (3 * s * s)) / s;
+  } else {
+    M = atan2(theta, s) / theta;
+  }
+  phi[0] = q[1] * M;
+  phi[1] = q[2] * M;
+  phi[2] = q[3] * M;
+}
+
+void star_QuatLog(double* q_log, const double* q) {
+  star_QuatLogm(q_log + 1, q);
+  q_log[0] = log(star_QuatNorm(q));
+}
+
+void star_QuatExpm(double* q, const double* phi) {
+  double theta = sqrt(phi[0] * phi[0] + phi[1] * phi[1] + phi[2] * phi[2]);
+  double s_theta;
+  double c_theta;
+  if (theta < STAR_EPS) {
+    s_theta = 1 - theta * theta / 6.0;
+    c_theta = 1 - theta * theta / 2.0;
+  } else {
+    s_theta = sin(theta) / theta;
+    c_theta = cos(theta);
+  }
+  q[0] = c_theta;
+  q[1] = phi[0] * s_theta;
+  q[2] = phi[1] * s_theta;
+  q[3] = phi[2] * s_theta;
+}
+
+void star_QuatExp(double* q_exp, const double* q) {
+  star_QuatExpm(q_exp, q + 1);
+  double s = exp(q[0]);
+  q_exp[0] *= s;
+  q_exp[1] *= s;
+  q_exp[2] *= s;
+  q_exp[3] *= s;
+}
+
+void star_Quat2RotMatActive(double* Q, const double* q) {
   Q[0 + 0] = (q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
   Q[0 + 1] = 2 * (q[1] * q[2] + q[0] * q[3]);
   Q[0 + 2] = 2 * (q[1] * q[3] - q[0] * q[2]);
@@ -153,7 +271,7 @@ void qmat_rotate(double* x2, const double* q, const double* x) {
   x2[2] += 2 * (q[1] * q[3] - q[0] * q[2]) * x[0];
 }
 
-void qmat_drotate(double* D, const double* q, const double* x) {
+void star_QuatRotateActiveJacobian(double* D, const double* q, const double* x) {
   D[0] = 2 * q[0] * x[0] + 2 * q[2] * x[2] - 2 * q[3] * x[1];
   D[1] = 2 * q[3] * x[0] + 2 * q[0] * x[1] - 2 * q[1] * x[2];
   D[2] = 2 * q[0] * x[2] + 2 * q[1] * x[1] - 2 * q[2] * x[0];
@@ -170,12 +288,7 @@ void qmat_drotate(double* D, const double* q, const double* x) {
   D[10] = 2 * q[0] * x[0] + 2 * q[2] * x[2] - 2 * q[3] * x[1];
   D[11] = 2 * q[1] * x[0] + 2 * q[2] * x[1] + 2 * q[3] * x[2];
 }
-void qmat_compose(double* q3, const double* q1, const double* q2) {
-  q3[0] = q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3];
-  q3[1] = q1[1] * q2[0] + q1[0] * q2[1] + q1[2] * q2[3] - q1[3] * q2[2];
-  q3[2] = q1[2] * q2[0] + q1[3] * q2[1] + q1[0] * q2[2] - q1[1] * q2[3];
-  q3[3] = q1[3] * q2[0] + q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1];
-}
+
 void qmat_err(double* phi, const double* q1, const double* q2) {
   double n = 1 / (q1[0] * q2[0] + q1[1] * q2[1] + q1[2] * q2[2] + q1[3] * q2[3]);
   phi[0] = (q1[1] * q2[0] + q1[2] * q2[3] - q1[0] * q2[1] - q1[3] * q2[2]) * n;
@@ -185,5 +298,19 @@ void qmat_err(double* phi, const double* q1, const double* q2) {
 void qmat_adderr(double* q, const double* q0, const double* phi) {
   double dq[4];
   qmat_cay(dq, phi);
-  qmat_compose(q, q0, dq);
+  star_QuatCompose(q, q0, dq);
+}
+
+void star_QuatRotateActive(double* x2, const double* q, const double* x) {
+  x2[0] = (q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]) * x[0];
+  x2[1] = 2 * (q[1] * q[2] + q[0] * q[3]) * x[0];
+  x2[2] = 2 * (q[1] * q[3] - q[0] * q[2]) * x[0];
+
+  x2[0] += 2 * (q[1] * q[2] - q[0] * q[3]) * x[1];
+  x2[1] += (q[0] * q[0] - q[1] * q[1] + q[2] * q[2] - q[3] * q[3]) * x[1];
+  x2[2] += 2 * (q[0] * q[1] + q[2] * q[3]) * x[1];
+
+  x2[0] = 2 * (q[0] * q[2] + q[1] * q[3]) * x[2];
+  x2[1] = 2 * (q[2] * q[3] - q[0] * q[1]) * x[2];
+  x2[2] = (q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]) * x[2];
 }

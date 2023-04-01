@@ -266,3 +266,13 @@ TEST(Vector3, BinaryMap) {
   EXPECT_NEAR(z[1], 15, EPS);
   EXPECT_NEAR(z[2], 0, EPS);
 }
+
+class MRP : public Vec3 {
+ public:
+  using Vec3::Vec3;
+};
+
+TEST(MRP, Constructor) {
+  MRP g{1, 2, 3};
+  g.Norm();
+}

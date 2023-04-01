@@ -8,7 +8,7 @@
 #include <math.h>
 #include <stdint.h>
 
-#include "typedefs.h"
+#include "star/typedefs.h"
 
 /*---------------------------------*/
 /* Setters                         */

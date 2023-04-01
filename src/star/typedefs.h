@@ -10,3 +10,5 @@ typedef STAR_FLOAT sfloat;
 #else
 typedef double sfloat;
 #endif
+
+#define STAR_EPS 1e-8
