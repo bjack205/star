@@ -28,8 +28,8 @@ void star_QuatLogm(double phi[4], const double q[4]);
 void star_QuatLog(double q_log[4], const double q[4]);
 void star_QuatExpm(double q[4], const double phi[3]);
 void star_QuatExp(double q_exp[4], const double q[3]);
-void star_QuatRotateActive(double x2[4], const double q[4], const double x[3]);
-void star_QuatRotatePassive(double* x2, const double q[3], const double x[3]);
+void star_QuatRotateActive(double v_rot[4], const double q[4], const double v[3]);
+void star_QuatRotatePassive(double* v_rot, const double q[3], const double v[3]);
 void star_QuatPure(double q[4], const double x[3]);
 void star_QuatComposePure(double q3[4], const double q1[4], const double x2[3]);
 

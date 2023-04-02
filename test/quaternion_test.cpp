@@ -148,7 +148,7 @@ TEST(QuaternionTest, ComposeLeft) {
   EXPECT_DOUBLE_EQ(24, q3[3]);
 }
 
-TEST(QuaternionTest, Logm) {
+TEST(QuaternionTest, Log) {
   double q[4] = {1, 2, 3, 4};
   double q_log[4];
   double phi[3] = {0.515190292664085, 0.7727854389961275, 1.03038058532817};
@@ -173,8 +173,9 @@ TEST(QuaternionTest, Exp) {
   double phi[3] = {theta * u[0], theta * u[1], theta * u[2]};
   double q_expected[4] = {cos(theta), sin(theta) * u[0], sin(theta) * u[1],
                           sin(theta) * u[2]};
+  double q[4] = {0, phi[0], phi[1], phi[2]};
   double q_exp[4];
-  star_QuatExpm(q_exp, phi);
+  star_QuatExp(q_exp, q);
   EXPECT_NEAR(q_expected[0], q_exp[0], EPS);
   EXPECT_NEAR(q_expected[1], q_exp[1], EPS);
   EXPECT_NEAR(q_expected[2], q_exp[2], EPS);
@@ -184,12 +185,29 @@ TEST(QuaternionTest, Exp) {
 
   // Check with non-zero scalar
   double scalar = 1.2;
-  double q[4] = {scalar, phi[0], phi[1], phi[2]};
+  q[0] = scalar;
   star_QuatExp(q_exp, q);
   EXPECT_NEAR(q_expected[0] * exp(scalar), q_exp[0], EPS);
   EXPECT_NEAR(q_expected[1] * exp(scalar), q_exp[1], EPS);
   EXPECT_NEAR(q_expected[2] * exp(scalar), q_exp[2], EPS);
   EXPECT_NEAR(q_expected[3] * exp(scalar), q_exp[3], EPS);
+}
+
+TEST(QuaternionTest, Exp_SmallAngle) {
+  double u[3] = {0.2672612419124244, 0.5345224838248488, 0.8017837257372732};
+  double theta = 1e-8;
+  double phi[3] = {theta * u[0], theta * u[1], theta * u[2]};
+  double q_expected[4] = {1, theta * u[0], theta * u[1], theta * u[2]};
+  double q[4] = {0, phi[0], phi[1], phi[2]};
+  double q_exp[4];
+  star_QuatExp(q_exp, q);
+  EXPECT_NEAR(q_expected[0], q_exp[0], EPS);
+  EXPECT_NEAR(q_expected[1], q_exp[1], EPS);
+  EXPECT_NEAR(q_expected[2], q_exp[2], EPS);
+  EXPECT_NEAR(q_expected[3], q_exp[3], EPS);
+
+  // Check Unit Norm
+  EXPECT_NEAR(1, star_QuatNorm(q_exp), 1e-15);
 }
 
 TEST(QuaternionTest, LogExp) {
@@ -215,4 +233,80 @@ TEST(QuaternionTest, ExpLog) {
   EXPECT_NEAR(q[1], q_log[1], EPS);
   EXPECT_NEAR(q[2], q_log[2], EPS);
   EXPECT_NEAR(q[3], q_log[3], EPS);
+}
+
+TEST(QuaternionTest, RotateActive) {
+  // Rotate 90 degrees about Z
+  double phi[3] = {0, 0, M_PI_2};
+  double q[4];
+  star_QuatExpm(q, phi);
+  EXPECT_NEAR(sqrt(2) / 2, q[0], EPS);
+  EXPECT_NEAR(0, q[1], EPS);
+  EXPECT_NEAR(0, q[2], EPS);
+  EXPECT_NEAR(sqrt(2) / 2, q[3], EPS);
+
+  double v[3] = {1, -2, 3};
+  double v_rot[3];
+  star_QuatRotateActive(v_rot, q, v);
+  EXPECT_DOUBLE_EQ(-v[1], v_rot[0]);
+  EXPECT_DOUBLE_EQ(+v[0], v_rot[1]);
+  EXPECT_DOUBLE_EQ(+v[2], v_rot[2]);
+
+  // Rotate 90 degrees about X
+  phi[0] = M_PI_2;
+  phi[1] = 0;
+  phi[2] = 0;
+  star_QuatExpm(q, phi);
+  star_QuatRotateActive(v_rot, q, v);
+  EXPECT_DOUBLE_EQ(+v[0], v_rot[0]);
+  EXPECT_DOUBLE_EQ(-v[2], v_rot[1]);
+  EXPECT_DOUBLE_EQ(+v[1], v_rot[2]);
+
+  // Rotate 90 degrees about Y
+  phi[0] = 0;
+  phi[1] = M_PI_2;
+  phi[2] = 0;
+  star_QuatExpm(q, phi);
+  star_QuatRotateActive(v_rot, q, v);
+  EXPECT_NEAR(+v[2], v_rot[0], EPS);
+  EXPECT_NEAR(+v[1], v_rot[1], EPS);
+  EXPECT_NEAR(-v[0], v_rot[2], EPS);
+}
+
+TEST(QuaternionTest, RotatePassive) {
+  // Rotate 90 degrees about Z
+  double phi[3] = {0, 0, M_PI_2};
+  double q[4];
+  star_QuatExpm(q, phi);
+  EXPECT_NEAR(sqrt(2) / 2, q[0], EPS);
+  EXPECT_NEAR(0, q[1], EPS);
+  EXPECT_NEAR(0, q[2], EPS);
+  EXPECT_NEAR(sqrt(2) / 2, q[3], EPS);
+
+  double v[3] = {1, -2, 3};
+  double v_rot[3];
+  star_QuatRotatePassive(v_rot, q, v);
+  EXPECT_DOUBLE_EQ(+v[1], v_rot[0]);
+  EXPECT_DOUBLE_EQ(-v[0], v_rot[1]);
+  EXPECT_DOUBLE_EQ(+v[2], v_rot[2]);
+
+  // Rotate 90 degrees about X
+  phi[0] = M_PI_2;
+  phi[1] = 0;
+  phi[2] = 0;
+  star_QuatExpm(q, phi);
+  star_QuatRotatePassive(v_rot, q, v);
+  EXPECT_DOUBLE_EQ(+v[0], v_rot[0]);
+  EXPECT_DOUBLE_EQ(+v[2], v_rot[1]);
+  EXPECT_DOUBLE_EQ(-v[1], v_rot[2]);
+
+  // Rotate 90 degrees about Y
+  phi[0] = 0;
+  phi[1] = M_PI_2;
+  phi[2] = 0;
+  star_QuatExpm(q, phi);
+  star_QuatRotatePassive(v_rot, q, v);
+  EXPECT_NEAR(-v[2], v_rot[0], EPS);
+  EXPECT_NEAR(+v[1], v_rot[1], EPS);
+  EXPECT_NEAR(+v[0], v_rot[2], EPS);
 }
