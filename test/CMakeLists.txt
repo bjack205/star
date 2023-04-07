@@ -19,6 +19,7 @@ function (add_star_test name)
 endfunction()
 
 add_star_test(vector3)
+add_star_test(matrix3)
 add_star_test(quaternion)
 
 add_executable(vector3 vector3_main.c)

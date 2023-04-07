@@ -31,11 +31,21 @@ void star_QuatExp(double q_exp[4], const double q[3]);
 void star_QuatRotateActive(double v_rot[4], const double q[4], const double v[3]);
 void star_QuatRotatePassive(double* v_rot, const double q[3], const double v[3]);
 void star_QuatPure(double q[4], const double x[3]);
-void star_QuatComposePure(double q3[4], const double q1[4], const double x2[3]);
+void star_QuatComposePure(double qv[4], const double q[4], const double v[3]);
 
 // Conversions
-void star_Quat2RotMatActive(double Q[9], const double q[4]);
-void star_Quat2RotMatPassive(double Q[9], const double q[4]);
+void star_QuatToRotMatActive(double Q[9], const double q[4]);
+void star_QuatToRotMatPassive(double Q[9], const double q[4]);
+
+void star_QuatToRodriguesParam(double g[3], const double q[4]);
+void star_RodriguesParamToQuat(double q[4], const double g[3]);
+
+void star_QuatToMRP(double p[3], const double q[4]);
+void star_MRPToQuat(double q[4], const double p[3]);
+
+void star_QuatToAxisAngle(double aa[4], const double q[4]);
+void star_QuatToEulerXYZ(double e[3], const double q[4]);
+void star_QuatToEulerZYX(double e[3], const double q[4]);
 
 // Jacobians
 void star_QuatRotateActiveJacobian(double* D, const double* q, const double* x);

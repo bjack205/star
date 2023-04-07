@@ -191,7 +191,25 @@ void star_QuatRotatePassive(double* v_rot, const double* q, const double* v) {
   v_rot[2] += (ww - xx - yy + zz) * v[2];
 }
 
-void star_Quat2RotMatActive(double* Q, const double* q) {
+void star_QuatPure(double* q, const double* x) {
+  q[0] = 0;
+  q[1] = x[0];
+  q[2] = x[1];
+  q[3] = x[2];
+}
+
+void star_QuatComposePure(double* qv, const double* q1, const double* v) {
+  qv[0] = -q1[1] * v[0] - q1[2] * v[1] - q1[3] * v[2];
+  qv[1] = +q1[0] * v[0] + q1[2] * v[2] - q1[3] * v[1];
+  qv[2] = +q1[3] * v[0] + q1[0] * v[1] - q1[1] * v[2];
+  qv[3] = +q1[0] * v[2] + q1[1] * v[1] - q1[2] * v[0];
+}
+
+/////////////////////////////////////////////
+// Conversions
+/////////////////////////////////////////////
+
+void star_QuatToRotMatActive(double* Q, const double* q) {
   double w = q[0];
   double x = q[1];
   double y = q[2];
@@ -215,6 +233,35 @@ void star_Quat2RotMatActive(double* Q, const double* q) {
   Q[3 + 2] = 2 * (yz + xw);
   Q[6 + 0] = 2 * (xz + yw);
   Q[6 + 1] = 2 * (yz - xw);
+  Q[6 + 2] = ww - xx - yy + zz;
+}
+
+void star_QuatToRotMatPassive(double* Q, const double* q) {
+  double w = q[0];
+  double x = q[1];
+  double y = q[2];
+  double z = q[3];
+  double ww = w * w;
+  double xx = x * x;
+  double yy = y * y;
+  double zz = z * z;
+  double xy = x * y;
+  double zw = z * w;
+  double xz = x * z;
+  double yw = y * w;
+  double yz = y * z;
+  double xw = x * w;
+
+  Q[0 + 0] = ww + xx - yy - zz;
+  Q[3 + 0] = 2 * (xy + zw);
+  Q[6 + 0] = 2 * (xz - yw);
+
+  Q[0 + 1] = 2 * (xy - zw);
+  Q[3 + 1] = ww - xx + yy - zz;
+  Q[6 + 1] = 2 * (yz + xw);
+
+  Q[0 + 2] = 2 * (xz + yw);
+  Q[3 + 2] = 2 * (yz - xw);
   Q[6 + 2] = ww - xx - yy + zz;
 }
 
@@ -373,3 +420,117 @@ void qmat_adderr(double* q, const double* q0, const double* phi) {
   star_QuatCompose(q, q0, dq);
 }
 
+void star_QuatToRodriguesParam(double* g, const double* q) {
+  double s = q[0];
+  if (fabs(s) < STAR_EPS) {
+    g[0] = NAN;
+    g[1] = NAN;
+    g[2] = NAN;
+    return;
+  }
+  g[0] = q[1] / s;
+  g[1] = q[2] / s;
+  g[2] = q[3] / s;
+}
+
+void star_RodriguesParamToQuat(double* q, const double* g) {
+  double M = 1.0 / sqrt(1 + g[0] * g[0] + g[1] * g[1] + g[2] * g[2]);
+  q[0] = M;
+  q[1] = g[0] * M;
+  q[2] = g[1] * M;
+  q[3] = g[2] * M;
+}
+
+void star_QuatToMRP(double* p, const double* q) {
+  double s = q[0];
+
+  if (fabs(s + 1) < STAR_EPS) {
+    p[0] = NAN;
+    p[1] = NAN;
+    p[2] = NAN;
+    return;
+  }
+  p[0] = q[1] / (1 + s);
+  p[1] = q[2] / (1 + s);
+  p[2] = q[3] / (1 + s);
+}
+
+void star_MRPToQuat(double* q, const double* p) {
+  double norm2 = p[0] * p[0] + p[1] * p[1] + p[2] * p[2];
+  double M = 2.0 / (1 + norm2);
+  q[0] = (1 - norm2) / (1 + norm2);
+  q[1] = p[0] * M;
+  q[2] = p[1] * M;
+  q[3] = p[2] * M;
+}
+
+void star_QuatToAxisAngle(double* aa, const double* q) {
+  star_QuatLogm(aa + 1, q);
+  double theta = sqrt(aa[1] * aa[1] + aa[2] * aa[2] + aa[3] * aa[3]);
+  if (fabs(theta) < STAR_EPS) {
+    aa[0] = 0;
+    aa[1] = 1;
+    aa[2] = 0;
+    aa[3] = 0;
+    return;
+  }
+  aa[0] = theta;
+  aa[1] /= theta;
+  aa[2] /= theta;
+  aa[3] /= theta;
+}
+
+void star_QuatToEulerXYZ(double* e, const double* q) {
+  double w = q[0];
+  double x = q[1];
+  double y = q[2];
+  double z = q[3];
+  double ww = w * w;
+  double xx = x * x;
+  double yy = y * y;
+  double zz = z * z;
+  double xy = x * y;
+  double zw = z * w;
+  double xz = x * z;
+  double yw = y * w;
+  double yz = y * z;
+  double xw = x * w;
+
+  double Q23 = 2 * (yz - xw);
+  double Q33 = ww - xx - yy + zz;
+
+  double Q11 = ww + xx - yy - zz;
+  double Q12 = 2 * (xy - zw);
+  double Q13 = 2 * (xz + yw);
+
+  e[0] = atan2(-Q23, Q33);
+  e[1] = atan2(Q13, sqrt(Q11 * Q11 + Q12 * Q12));
+  e[2] = atan2(-Q12, Q11);
+}
+
+void star_QuatToEulerZYX(double* e, const double* q) {
+  double w = q[0];
+  double x = q[1];
+  double y = q[2];
+  double z = q[3];
+  double ww = w * w;
+  double xx = x * x;
+  double yy = y * y;
+  double zz = z * z;
+  double xy = x * y;
+  double zw = z * w;
+  double xz = x * z;
+  double yw = y * w;
+  double yz = y * z;
+  double xw = x * w;
+
+  double Q11 = ww + xx - yy - zz;
+  double Q21 = 2 * (xy + zw);
+  double Q31 = 2 * (xz - yw);
+  double Q32 = 2 * (yz + xw);
+  double Q33 =  ww - xx - yy + zz;
+
+  e[0] = atan2(Q21, Q11);
+  e[1] = atan2(-Q31, sqrt(Q32 * Q32 + Q33 * Q33));
+  e[2] = atan2(Q32, Q33);
+}

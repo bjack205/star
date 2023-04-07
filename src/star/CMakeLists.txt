@@ -10,6 +10,9 @@ add_library(
   vector4.c
   vector4.h
 
+  matrix3.c
+  matrix3.h
+
   quaternion.c
   quaternion.h
 )
