@@ -18,7 +18,7 @@ add_library(
 
   quaternion.c
   quaternion.h
-  matrix4.c matrix4.h)
+  matrix4.c matrix4.h matrix43.c matrix43.h)
 target_compile_definitions(star PUBLIC STAR_FLOAT=${STAR_FLOAT})
 target_include_directories(star PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
