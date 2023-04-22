@@ -12,16 +12,19 @@ double star_QuatNorm(const double q[4]);
 double star_QuatNormSquared(const double q[4]);
 double star_QuatVecNorm(const double q[4]);
 double star_QuatVecNormSquared(const double q[4]);
+double star_PrincipalAngle(const double q[4]);
+double star_QuatAngleBetween(const double q1[4], const double q2[4]);
 
 // Quaternion operations
 void star_QuatIdentity(double q[4]);
-void star_QuatNormalize(double q_normalized[4], double q[4]);
+void star_QuatNormalize(double q_normalized[4], const double q[4]);
 void star_QuatFlip(double q_flip[4], const double q[4]);
 void star_QuatVec(double vec[3], const double q[4]);
 void star_QuatConjugate(double q_conj[4], const double q[4]);
 void star_QuatInverse(double q_inv[4], const double q[4]);
 void star_QuatCompose(double q12[4], const double q1[4], const double q2[4]);
 void star_QuatComposeLeft(double q21[4], const double q1[4], const double q2[4]);
+void star_QuatDiff(double dq[4], const double q1[4], const double q2[4]);
 
 // Operations on vectors
 void star_QuatLogm(double phi[4], const double q[4]);
@@ -44,8 +47,18 @@ void star_QuatToMRP(double p[3], const double q[4]);
 void star_MRPToQuat(double q[4], const double p[3]);
 
 void star_QuatToAxisAngle(double aa[4], const double q[4]);
+void star_AxisAngleToQuat(double q[4], const double qq[4]);
+
 void star_QuatToEulerXYZ(double e[3], const double q[4]);
+void star_EulerXYZToQuat(double q[4], const double e[3]);
+
 void star_QuatToEulerZYX(double e[3], const double q[4]);
+void star_EulerZYXToQuat(double q[4], const double e[3]);
+
+// Cardinal Rotations
+void star_QuatRotX(double q[4], double angle);
+void star_QuatRotY(double q[4], double angle);
+void star_QuatRotZ(double q[4], double angle);
 
 // Jacobians
 void star_QuatRotateActiveJacobian(double* D, const double* q, const double* x);

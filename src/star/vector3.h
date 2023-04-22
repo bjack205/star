@@ -112,6 +112,12 @@ void star_Div3(sfloat out[3], const sfloat x[3], const sfloat y[3]) {
   out[2] = x[2] / y[2];
 }
 
+void star_Scale3(sfloat out[3], sfloat scale, const sfloat x[3]) {
+  out[0] = x[0] * scale;
+  out[1] = x[1] * scale;
+  out[2] = x[2] * scale;
+}
+
 void star_UnaryMap(sfloat out[3], const sfloat x[3], sfloat (*function)(sfloat)) {
   out[0] = function(x[0]);
   out[1] = function(x[1]);

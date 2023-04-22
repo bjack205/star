@@ -9,6 +9,8 @@
 extern "C" {
 #include "star/matrix3.h"
 #include "star/quaternion.h"
+#include "star/vector3.h"
+#include "star/vector4.h"
 }
 
 #define EPS 1e-8
@@ -149,6 +151,21 @@ TEST(QuaternionTest, ComposeLeft) {
   EXPECT_DOUBLE_EQ(24, q3[3]);
 }
 
+TEST(QuaternionTest, Diff) {
+  double q1[4] = {1, 2, 3, 4};
+  double q2[4] = {5, 6, 7, 8};
+  double dq[4];
+  double q3[4];
+  double q2_inv[4];
+  star_QuatConjugate(q2_inv, q2);
+  star_QuatComposeLeft(q3, q1, q2_inv);
+  star_QuatDiff(dq, q1, q2);  // NOTE: doesn't normalize
+  EXPECT_NEAR(q3[0], dq[0], EPS);
+  EXPECT_NEAR(q3[1], dq[1], EPS);
+  EXPECT_NEAR(q3[2], dq[2], EPS);
+  EXPECT_NEAR(q3[3], dq[3], EPS);
+}
+
 TEST(QuaternionTest, Log) {
   double q[4] = {1, 2, 3, 4};
   double q_log[4];
@@ -166,6 +183,24 @@ TEST(QuaternionTest, Log) {
   EXPECT_DOUBLE_EQ(phi[0], q_log[1]);
   EXPECT_DOUBLE_EQ(phi[1], q_log[2]);
   EXPECT_DOUBLE_EQ(phi[2], q_log[3]);
+}
+
+TEST(QuaternionTest, PrincipalAngle) {
+  double q[4];
+  double angle1 = 0.4;
+  star_QuatRotX(q, angle1);
+  EXPECT_NEAR(star_PrincipalAngle(q), angle1, EPS);
+
+  double q2[4];
+  double phi[3] = {1, 0, 0};
+  double angle2 = 0.123;
+  star_Scale3(phi, angle2, phi);
+  star_QuatExpm(q2, phi);
+  EXPECT_NEAR(star_PrincipalAngle(q2), angle2, EPS);
+
+  double q3[4];
+  star_QuatCompose(q3, q, q2);
+  EXPECT_NEAR(star_PrincipalAngle(q3), angle1 + angle2, EPS);
 }
 
 TEST(QuaternionTest, Exp) {
@@ -395,6 +430,20 @@ TEST(QuaternionConversions, ToMRP) {
   EXPECT_NEAR(q[3], q2[3], EPS);
 }
 
+TEST(QuaternionConversions, ToAxisAngle) {
+  double q[4] = {1, 2, 3, 4};
+  star_QuatNormalize(q, q);
+  double aa[4];
+
+  star_QuatToAxisAngle(aa, q);
+  double q2[4];
+  star_AxisAngleToQuat(q2, aa);
+  EXPECT_NEAR(q[0], q2[0], EPS);
+  EXPECT_NEAR(q[1], q2[1], EPS);
+  EXPECT_NEAR(q[2], q2[2], EPS);
+  EXPECT_NEAR(q[3], q2[3], EPS);
+}
+
 TEST(QuaternionConversions, ToEuler123) {
   double q[4] = {1, 2, 3, 4};
   star_QuatNormalize(q, q);
@@ -434,7 +483,7 @@ TEST(QuaternionConversions, ToEuler123) {
   EXPECT_NEAR(euler[2], angle, EPS);
 }
 
-TEST(QuaternionConversions, ToEuler321) {
+TEST(QuaternionConversions, ToEulerZYX) {
   double q[4] = {1, 2, 3, 4};
   star_QuatNormalize(q, q);
   double euler[3];

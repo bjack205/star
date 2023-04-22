@@ -13,7 +13,6 @@ namespace star {
 
 class Vec3 {
  public:
-
   /*---------------------------------*/
   /* Constructors                    */
   /*---------------------------------*/
@@ -65,7 +64,6 @@ class Vec3 {
   Vec3 UnaryMap(sfloat (*function)(sfloat)) const;
   Vec3 BinaryMap(const Vec3& y, sfloat (*function)(sfloat, sfloat)) const;
 
-
   Vec3 operator+(const Vec3& rhs) const { return this->Add(rhs); }
   Vec3 operator-(const Vec3& rhs) const { return this->Sub(rhs); }
   Vec3 operator*(const Vec3& rhs) const { return this->Mul(rhs); }
@@ -76,11 +74,40 @@ class Vec3 {
   Vec3& operator*=(const Vec3& rhs) { return this->MulInPlace(rhs); };
   Vec3& operator/=(const Vec3& rhs) { return this->DivInPlace(rhs); };
 
+  template <class T>
+  Vec3& operator+=(T alpha) {
+    x += alpha;
+    y += alpha;
+    z += alpha;
+    return *this;
+  };
+  template <class T>
+  Vec3& operator-=(T alpha) {
+    x -= alpha;
+    y -= alpha;
+    z -= alpha;
+    return *this;
+  }
+  template <class T>
+  Vec3& operator*=(T alpha) {
+    x *= alpha;
+    y *= alpha;
+    z *= alpha;
+    return *this;
+  }
+  template <class T>
+  Vec3& operator/=(T alpha) {
+    x /= alpha;
+    y /= alpha;
+    z /= alpha;
+    return *this;
+  }
+
   /*---------------------------------*/
   /* Data Access                     */
   /*---------------------------------*/
-  sfloat *data() { return &x; }
-  const sfloat *data() const { return &x; }
+  sfloat* data() { return &x; }
+  const sfloat* data() const { return &x; }
   sfloat& operator[](size_t index) { return (&x)[index]; }
   const sfloat& operator[](size_t index) const { return (&x)[index]; }
 

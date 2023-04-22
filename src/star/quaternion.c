@@ -20,8 +20,19 @@ double star_QuatNormSquared(const double* q) {
 double star_QuatVecNorm(const double* q) {
   return sqrt(q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
 }
+
 double star_QuatVecNormSquared(const double* q) {
   return q[1] * q[1] + q[2] * q[2] + q[3] * q[3];
+}
+
+double star_PrincipalAngle(const double* q) {
+  return 2 * atan2(star_QuatVecNorm(q), q[0]);
+}
+
+double star_QuatAngleBetween(const double* q1, const double* q2) {
+  double dq[4];
+  star_QuatDiff(dq, q1, q2);
+  return star_PrincipalAngle(dq);
 }
 
 void star_QuatIdentity(double* q) {
@@ -31,7 +42,7 @@ void star_QuatIdentity(double* q) {
   q[3] = 0;
 }
 
-void star_QuatNormalize(double* q_normalized, double* q) {
+void star_QuatNormalize(double q_normalized[4], const double q[4]) {
   double n = 1 / star_QuatNorm(q);
   q_normalized[0] = q[0] * n;
   q_normalized[1] = q[1] * n;
@@ -72,6 +83,14 @@ void star_QuatCompose(double* q3, const double* q1, const double* q2) {
   q3[1] = q1[1] * q2[0] + q1[0] * q2[1] + q1[2] * q2[3] - q1[3] * q2[2];
   q3[2] = q1[2] * q2[0] + q1[3] * q2[1] + q1[0] * q2[2] - q1[1] * q2[3];
   q3[3] = q1[3] * q2[0] + q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1];
+}
+
+void star_QuatDiff(double* dq, const double* q1, const double* q2) {
+  // NOTE: This is conjugate(q2) * q1, the quaternion equivalent of q1 - q2
+  dq[0] = +q2[0] * q1[0] + q2[1] * q1[1] + q2[2] * q1[2] + q2[3] * q1[3];
+  dq[1] = -q2[1] * q1[0] + q2[0] * q1[1] - q2[2] * q1[3] + q2[3] * q1[2];
+  dq[2] = -q2[2] * q1[0] - q2[3] * q1[1] + q2[0] * q1[2] + q2[1] * q1[3];
+  dq[3] = -q2[3] * q1[0] + q2[0] * q1[3] - q2[1] * q1[2] + q2[2] * q1[1];
 }
 
 void star_QuatComposeLeft(double* q3, const double* q1, const double* q2) {
@@ -125,6 +144,33 @@ void star_QuatExpm(double* q, const double* phi) {
   q[1] = phi[0] * s_theta;
   q[2] = phi[1] * s_theta;
   q[3] = phi[2] * s_theta;
+}
+
+void star_QuatRotX(double* q, double theta) {
+  double s = sin(theta / 2);
+  double c = cos(theta / 2);
+  q[0] = c;
+  q[1] = s;
+  q[2] = 0;
+  q[3] = 0;
+}
+
+void star_QuatRotY(double* q, double theta) {
+  double s = sin(theta / 2);
+  double c = cos(theta / 2);
+  q[0] = c;
+  q[1] = 0;
+  q[2] = s;
+  q[3] = 0;
+}
+
+void star_QuatRotZ(double* q, double theta) {
+  double s = sin(theta / 2);
+  double c = cos(theta / 2);
+  q[0] = c;
+  q[1] = 0;
+  q[2] = 0;
+  q[3] = s;
 }
 
 void star_QuatExp(double* q_exp, const double* q) {
@@ -480,6 +526,15 @@ void star_QuatToAxisAngle(double* aa, const double* q) {
   aa[3] /= theta;
 }
 
+void star_AxisAngleToQuat(double* q, const double* aa) {
+  double theta = aa[0];
+  const double* u = aa + 1;
+  q[1] = u[0] * theta;
+  q[2] = u[1] * theta;
+  q[3] = u[2] * theta;
+  star_QuatExpm(q, q + 1);
+}
+
 void star_QuatToEulerXYZ(double* e, const double* q) {
   double w = q[0];
   double x = q[1];
@@ -508,6 +563,10 @@ void star_QuatToEulerXYZ(double* e, const double* q) {
   e[2] = atan2(-Q12, Q11);
 }
 
+// void star_EulerXYZToQuat(double* q, const double* e) {
+//
+// }
+
 void star_QuatToEulerZYX(double* e, const double* q) {
   double w = q[0];
   double x = q[1];
@@ -528,7 +587,7 @@ void star_QuatToEulerZYX(double* e, const double* q) {
   double Q21 = 2 * (xy + zw);
   double Q31 = 2 * (xz - yw);
   double Q32 = 2 * (yz + xw);
-  double Q33 =  ww - xx - yy + zz;
+  double Q33 = ww - xx - yy + zz;
 
   e[0] = atan2(Q21, Q11);
   e[1] = atan2(-Q31, sqrt(Q32 * Q32 + Q33 * Q33));
