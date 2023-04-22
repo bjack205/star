@@ -43,4 +43,3 @@ void star_AddConst44(sfloat C[16], const sfloat A[16], sfloat b);
 void star_SubConst44(sfloat C[16], const sfloat A[16], sfloat b);
 void star_MulConst44(sfloat C[16], const sfloat A[16], sfloat b);
 void star_DivConst44(sfloat C[16], const sfloat A[16], sfloat b);
-
