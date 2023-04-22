@@ -84,7 +84,7 @@ TEST(Matrix3, MulAtB) {
   sfloat C[9];
   const sfloat At[9] = {1, 4, 7, 2, 5, 8, 3, 6, 9};
   const sfloat B[9] = {9, 8, 7, 6, 5, 4, 3, 2, 1};
-  star_MatTransposedMul33(C, At, B);
+  star_TransposedMatMul33(C, At, B);
   sfloat C_expected[9] = {90, 114, 138, 54, 69, 84, 18, 24, 30};
   for (int i = 0; i < 9; i++) {
     EXPECT_EQ(C[i], C_expected[i]);
@@ -117,7 +117,7 @@ TEST(Matrix3, MulAtx) {
   sfloat y[3];
   const sfloat At[9] = {1, 4, 7, 2, 5, 8, 3, 6, 9};
   const sfloat x[3] = {10, 11, 12};
-  star_VecTransposedMul33(y, At, x);
+  star_TransposedVecMul33(y, At, x);
   sfloat y_expected[3] = {138, 171, 204};
   for (int i = 0; i < 3; i++) {
     EXPECT_EQ(y[i], y_expected[i]);

@@ -23,10 +23,11 @@ void star_Transpose33(sfloat dst[9], const sfloat src[9]);
 /*---------------------------------*/
 
 void star_MatMul33(sfloat C[9], const sfloat A[9], const sfloat B[9]);
-void star_MatTransposedMul33(sfloat C[9], const sfloat At[9], const sfloat B[9]);
-void star_MatMulTransposed33(sfloat C[9], const sfloat A[9], const sfloat Bt[9]);
 void star_VecMul33(sfloat C[3], const sfloat A[9], const sfloat x[3]);
-void star_VecTransposedMul33(sfloat C[3], const sfloat At[9], const sfloat x[3]);
+
+void star_TransposedMatMul33(sfloat C[9], const sfloat At[9], const sfloat B[9]);
+void star_MatMulTransposed33(sfloat C[9], const sfloat A[9], const sfloat Bt[9]);
+void star_TransposedVecMul33(sfloat y[3], const sfloat At[9], const sfloat x[3]);
 
 /*---------------------------------*/
 /* Triangular Matrices             */

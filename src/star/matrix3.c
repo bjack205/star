@@ -43,13 +43,7 @@ void star_SetIdentity33(sfloat mat[9], sfloat value) {
 
 void star_SetDiagonal33(sfloat mat[9], const sfloat diag[3]) {
   mat[0] = diag[0];
-  mat[1] = 0;
-  mat[2] = 0;
-  mat[3] = 0;
   mat[4] = diag[1];
-  mat[5] = 0;
-  mat[6] = 0;
-  mat[7] = 0;
   mat[8] = diag[2];
 }
 
@@ -65,7 +59,7 @@ void star_MatMul33(sfloat* C, const sfloat* A, const sfloat* B) {
   C[8] = A[2] * B[6] + A[5] * B[7] + A[8] * B[8];
 }
 
-void star_MatTransposedMul33(sfloat* C, const sfloat* At, const sfloat* B) {
+void star_TransposedMatMul33(sfloat C[9], const sfloat At[9], const sfloat B[9]) {
   C[0] = At[0] * B[0] + At[1] * B[1] + At[2] * B[2];
   C[1] = At[3] * B[0] + At[4] * B[1] + At[5] * B[2];
   C[2] = At[6] * B[0] + At[7] * B[1] + At[8] * B[2];
@@ -89,16 +83,26 @@ void star_MatMulTransposed33(sfloat* C, const sfloat* A, const sfloat* Bt) {
   C[8] = A[2] * Bt[2] + A[5] * Bt[5] + A[8] * Bt[8];
 }
 
-void star_VecMul33(sfloat* C, const sfloat* A, const sfloat* x) {
-  C[0] = A[0] * x[0] + A[3] * x[1] + A[6] * x[2];
-  C[1] = A[1] * x[0] + A[4] * x[1] + A[7] * x[2];
-  C[2] = A[2] * x[0] + A[5] * x[1] + A[8] * x[2];
+void star_VecMul33(sfloat* y, const sfloat* A, const sfloat* x) {
+  // Extract out x so that x and y can be aliased
+  sfloat x0 = x[0];
+  sfloat x1 = x[1];
+  sfloat x2 = x[2];
+
+  y[0] = A[0] * x0 + A[3] * x1 + A[6] * x2;
+  y[1] = A[1] * x0 + A[4] * x1 + A[7] * x2;
+  y[2] = A[2] * x0 + A[5] * x1 + A[8] * x2;
 }
 
-void star_VecTransposedMul33(sfloat* C, const sfloat* At, const sfloat* x) {
-  C[0] = At[0] * x[0] + At[1] * x[1] + At[2] * x[2];
-  C[1] = At[3] * x[0] + At[4] * x[1] + At[5] * x[2];
-  C[2] = At[6] * x[0] + At[7] * x[1] + At[8] * x[2];
+void star_TransposedVecMul33(sfloat y[3], const sfloat At[9], const sfloat x[3]) {
+  // Extract out x so that x and y can be aliased
+  sfloat x0 = x[0];
+  sfloat x1 = x[1];
+  sfloat x2 = x[2];
+
+  y[0] = At[0] * x0 + At[1] * x1 + At[2] * x2;
+  y[1] = At[3] * x0 + At[4] * x1 + At[5] * x2;
+  y[2] = At[6] * x0 + At[7] * x1 + At[8] * x2;
 }
 
 void star_UpperMatMul33(sfloat* C, const sfloat* U, const sfloat* A) {

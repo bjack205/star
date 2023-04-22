@@ -11,6 +11,7 @@ function (add_star_test name)
     PRIVATE
     star::star++
     gtest::gtest
+    fmt
     )
   if (NOT APPLE AND NOT WIN32)
     target_link_libraries(${TEST_NAME} PUBLIC m)
@@ -20,7 +21,9 @@ endfunction()
 
 add_star_test(vector3)
 add_star_test(matrix3)
+add_star_test(matrix)
 add_star_test(quaternion)
+add_star_test(quaternion_class)
 
 add_executable(vector3 vector3_main.c)
 target_link_libraries(vector3 PRIVATE star::star)
