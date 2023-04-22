@@ -24,6 +24,7 @@ add_star_test(matrix3)
 add_star_test(matrix)
 add_star_test(quaternion)
 add_star_test(quaternion_class)
+add_star_test(matrix_class)
 
 add_executable(vector3 vector3_main.c)
 target_link_libraries(vector3 PRIVATE star::star)

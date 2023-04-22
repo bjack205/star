@@ -18,7 +18,11 @@ add_library(
 
   quaternion.c
   quaternion.h
-  matrix4.c matrix4.h matrix43.c matrix43.h)
+
+  matrix4.c matrix4.h
+
+  matrix43.c matrix43.h
+)
 target_compile_definitions(star PUBLIC STAR_FLOAT=${STAR_FLOAT})
 target_include_directories(star PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
@@ -37,6 +41,15 @@ add_library(
 
   Quaternion.cpp
   Quaternion.hpp
+
+  Mat3.cpp
+  Mat3.hpp
+
+  Transpose.cpp
+  Transpose.hpp
+
+  matrix_multiplication.cpp
+  matrix_multiplication.hpp
 )
 target_link_libraries(star++ PUBLIC star::star)
 target_include_directories(star++ PUBLIC ${PROJECT_SOURCE_DIR}/src)
