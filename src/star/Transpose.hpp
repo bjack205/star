@@ -25,12 +25,27 @@ class Transpose {
   constexpr int Cols() const { return kCols; }
   constexpr int Size() const { return kSize; }
 
-  // Constructors
+  /*-------------------------------------
+   * Constructors
+   *-----------------------------------*/
   Transpose(Mat& mat) : mat_(mat) {};
 
-  // Data Access
-  sfloat* operator[](int k) { return mat_(k % 3, k / 3); }
-  const sfloat* operator[](int k) const { return mat_(k % 3, k / 3); }
+  /*-------------------------------------
+   * Getters
+   *-----------------------------------*/
+  auto GetRow(int row) const {
+    return mat_.GetCol(row);
+  }
+
+  auto GetCol(int col) const {
+    return mat_.GetRow(col);
+  }
+
+  /*-------------------------------------
+   * Data Access
+   *-----------------------------------*/
+  sfloat& operator[](int k) { return mat_(k % 3, k / 3); }
+  const sfloat& operator[](int k) const { return mat_(k % 3, k / 3); }
   sfloat& operator()(int i, int j) { return mat_(j, i); }
   const sfloat& operator()(int i, int j) const { return mat_(j, i); }
   sfloat* data() { return mat_.data(); }

@@ -89,6 +89,23 @@ void star_MatMul433(sfloat* C43, const sfloat* A43, const sfloat* B33) {
   C43[11] = A43[3] * B33[6] + A43[7] * B33[7] + A43[11] * B33[8];
 }
 
+void star_MatMulTransposed433(sfloat* C43, const sfloat* A43, const sfloat* B33t) {
+  C43[0] = A43[0] * B33t[0] + A43[4] * B33t[3] + A43[8] * B33t[6];
+  C43[1] = A43[1] * B33t[0] + A43[5] * B33t[3] + A43[9] * B33t[6];
+  C43[2] = A43[2] * B33t[0] + A43[6] * B33t[3] + A43[10] * B33t[6];
+  C43[3] = A43[3] * B33t[0] + A43[7] * B33t[3] + A43[11] * B33t[6];
+
+  C43[4] = A43[0] * B33t[1] + A43[4] * B33t[4] + A43[8] * B33t[7];
+  C43[5] = A43[1] * B33t[1] + A43[5] * B33t[4] + A43[9] * B33t[7];
+  C43[6] = A43[2] * B33t[1] + A43[6] * B33t[4] + A43[10] * B33t[7];
+  C43[7] = A43[3] * B33t[1] + A43[7] * B33t[4] + A43[11] * B33t[7];
+
+  C43[8] = A43[0] * B33t[2] + A43[4] * B33t[5] + A43[8] * B33t[8];
+  C43[9] = A43[1] * B33t[2] + A43[5] * B33t[5] + A43[9] * B33t[8];
+  C43[10] = A43[2] * B33t[2] + A43[6] * B33t[5] + A43[10] * B33t[8];
+  C43[11] = A43[3] * B33t[2] + A43[7] * B33t[5] + A43[11] * B33t[8];
+}
+
 void star_MatMul443(sfloat* C43, const sfloat* A44, const sfloat* B43) {
   // Multiply a 4x4 matrix by a 4x3 matrix
   C43[0] = A44[0] * B43[0] + A44[4] * B43[1] + A44[8] * B43[2] + A44[12] * B43[3];
@@ -105,6 +122,35 @@ void star_MatMul443(sfloat* C43, const sfloat* A44, const sfloat* B43) {
   C43[9] = A44[1] * B43[8] + A44[5] * B43[9] + A44[9] * B43[10] + A44[13] * B43[11];
   C43[10] = A44[2] * B43[8] + A44[6] * B43[9] + A44[10] * B43[10] + A44[14] * B43[11];
   C43[11] = A44[3] * B43[8] + A44[7] * B43[9] + A44[11] * B43[10] + A44[15] * B43[11];
+}
+
+void star_TransposedMatMul443(sfloat* C43, const sfloat* A44t, const sfloat* B43) {
+  C43[0] = A44t[0] * B43[0] + A44t[1] * B43[1] + A44t[2] * B43[2] + A44t[3] * B43[3];
+  C43[1] = A44t[4] * B43[0] + A44t[5] * B43[1] + A44t[6] * B43[2] + A44t[7] * B43[3];
+  C43[2] = A44t[8] * B43[0] + A44t[9] * B43[1] + A44t[10] * B43[2] + A44t[11] * B43[3];
+  C43[3] = A44t[12] * B43[0] + A44t[13] * B43[1] + A44t[14] * B43[2] + A44t[15] * B43[3];
+
+  C43[4] = A44t[0] * B43[4] + A44t[1] * B43[5] + A44t[2] * B43[6] + A44t[3] * B43[7];
+  C43[5] = A44t[4] * B43[4] + A44t[5] * B43[5] + A44t[6] * B43[6] + A44t[7] * B43[7];
+  C43[6] = A44t[8] * B43[4] + A44t[9] * B43[5] + A44t[10] * B43[6] + A44t[11] * B43[7];
+  C43[7] = A44t[12] * B43[4] + A44t[13] * B43[5] + A44t[14] * B43[6] + A44t[15] * B43[7];
+
+  C43[8] = A44t[0] * B43[8] + A44t[1] * B43[9] + A44t[2] * B43[10] + A44t[3] * B43[11];
+  C43[9] = A44t[4] * B43[8] + A44t[5] * B43[9] + A44t[6] * B43[10] + A44t[7] * B43[11];
+  C43[10] = A44t[8] * B43[8] + A44t[9] * B43[9] + A44t[10] * B43[10] + A44t[11] * B43[11];
+  C43[11] = A44t[12] * B43[8] + A44t[13] * B43[9] + A44t[14] * B43[10] + A44t[15] * B43[11];
+}
+
+void star_MatMul344(sfloat* C34, const sfloat* A34, const sfloat* B44) {
+  (void)C34;
+  (void)A34;
+  (void)B44;
+}
+
+void star_MatMulTransposed344(sfloat* C34, const sfloat* A34, const sfloat* B44t) {
+  (void)C34;
+  (void)A34;
+  (void)B44t;
 }
 
 void star_VecMul43(sfloat* y, const sfloat* A, const sfloat* x) {

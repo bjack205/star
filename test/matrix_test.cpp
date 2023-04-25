@@ -98,7 +98,7 @@ TEST(Matrix4, SetConst) {
 
 TEST(Matrix4, SetIdentity) {
   sfloat A[16];
-  star_SetIdentity44(A);
+  star_SetIdentity44(A, 0);
   for (int i = 0; i < 16; i++) {
     if (i % 5 == 0) {
       EXPECT_EQ(A[i], 1);

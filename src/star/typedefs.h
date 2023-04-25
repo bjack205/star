@@ -12,3 +12,9 @@ typedef double sfloat;
 #endif
 
 #define STAR_EPS 1e-8
+
+// check if c++
+#ifdef __cplusplus
+#include <utility>
+using IndexPair = std::pair<int, int>;
+#endif

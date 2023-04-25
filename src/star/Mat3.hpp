@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "typedefs.h"
 #include "Vec3.hpp"
+#include "typedefs.h"
 
 namespace star {
 
@@ -20,15 +20,12 @@ class Mat3 {
   constexpr int Cols() const { return kCols; }
   constexpr int Size() const { return kSize; }
 
-  // Constructors
+  /*-------------------------------------
+   * Constructors
+   *-----------------------------------*/
   Mat3() = default;
-  Mat3(sfloat x00, sfloat x10, sfloat x20, sfloat x01, sfloat x11, sfloat x21,
-       sfloat x02, sfloat x12, sfloat x22);
-  Mat3(const Mat3& other) = default;
-  Mat3& operator=(const Mat3& other) = default;
-  Mat3(Mat3&& other) = default;
-  Mat3& operator=(Mat3&& other) = default;
-  ~Mat3() = default;
+  Mat3(sfloat x00, sfloat x10, sfloat x20, sfloat x01, sfloat x11, sfloat x21, sfloat x02,
+       sfloat x12, sfloat x22);
 
   template <class Vector>
   explicit Mat3(Vector v) {
@@ -37,7 +34,9 @@ class Mat3 {
     }
   }
 
-  // Static methods
+  /*-------------------------------------
+   * Static Methods
+   *-----------------------------------*/
   static Mat3 ByRows(sfloat x00, sfloat x01, sfloat x02, sfloat x10, sfloat x11, sfloat x12,
                      sfloat x20, sfloat x21, sfloat x22);
   static Mat3 Zero();
@@ -53,38 +52,45 @@ class Mat3 {
     return Mat3::Diagonal(v[0], v[1], v[2]);
   }
 
-  // Setters
+  /*-------------------------------------
+   * Getters
+   *-----------------------------------*/
+  Vec3 GetRow(int row) const;
+  Vec3 GetCol(int col) const;
+  Vec3 GetDiagonal() const;
+
+  /*-------------------------------------
+   * Setters
+   *-----------------------------------*/
+  void SetRow(int row, const Vec3& v);
+  void SetCol(int col, const Vec3& v);
   void SetZero();
   void SetIdentity();
-  void SetIdentity(sfloat value);
   void SetConst(sfloat value);
   void SetDiagonal(sfloat value);
   void SetDiagonal(const Mat3& m);
   void SetDiagonal(sfloat x, sfloat y, sfloat z);
+  void SetDiagonal(const Vec3& v);
 
-  // Transpose
-  Mat3 Transpose() const;
-  Mat3& TransposeInPlace();
-
-//  // Multiplication
-//  template <class MatOrVec>
-//  auto Mul(const MatOrVec& B) const {
-//    return Multiply(*this, B);
-//  }
-//
-//  template <class MatOrVec>
-//  auto operator*(const MatOrVec& B) const {
-//    return Multiply(*this, B);
-//  }
-
-  // Data Access
+  /*-------------------------------------
+   * Data Access
+   *-----------------------------------*/
   sfloat& operator[](int i) { return data_[i]; }
   const sfloat& operator[](int i) const { return data_[i]; }
+  sfloat& operator[](IndexPair ij) { return data_[std::get<0>(ij) + kRows * std::get<1>(ij)]; }
+  const sfloat& operator[](IndexPair ij) const {
+    return data_[std::get<0>(ij) + kRows * std::get<1>(ij)];
+  }
+
   sfloat& operator()(int i, int j) { return data_[i * kCols + j]; }
   const sfloat& operator()(int i, int j) const { return data_[i * kCols + j]; }
   sfloat* data() { return data_; }
   const sfloat* data() const { return data_; }
 
+  /*-------------------------------------
+   * Linear Algebra
+   *-----------------------------------*/
+  // TODO: Add linear algebra
 
  private:
   sfloat data_[kSize];
