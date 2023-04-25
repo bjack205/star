@@ -42,6 +42,7 @@ class Quaternion : public Vec4 {
   static Quaternion Expm(sfloat x, sfloat y, sfloat z);
   static Quaternion Expm(const Vec3& v);
   static Quaternion FromAxisAngle(sfloat angle, sfloat x, sfloat y, sfloat z);
+  static Quaternion FromAxisAngle(sfloat angle, const Vec3& axis);
   static Quaternion RotX(sfloat angle);
   static Quaternion RotY(sfloat angle);
   static Quaternion RotZ(sfloat angle);
@@ -84,6 +85,7 @@ class Quaternion : public Vec4 {
   /*---------------------------------*/
   Mat4 L() const;
   Mat4 R() const;
+  Mat43 H() const;
 
   /*---------------------------------*/
   /* Comparison                      */

@@ -50,7 +50,7 @@ add_library(
 
   matrix_multiplication.cpp
   matrix_multiplication.hpp
-  Mat4.cpp Mat4.hpp Mat43.cpp Mat43.hpp)
+  Mat4.cpp Mat4.hpp Mat43.cpp Mat43.hpp RotMat.hpp)
 target_link_libraries(star++ PUBLIC star::star)
 target_include_directories(star++ PUBLIC ${PROJECT_SOURCE_DIR}/src)
 add_library(star::star++ ALIAS star++)

@@ -172,6 +172,20 @@ TEST(QuaternionClass, GMat) {
   q1.NormalizeInPlace();
   Vec3 v = {5, 6, 7};
   Quaternion q3 = q1.ComposePure(v);
-  Quaternion q4 = q1.AttitudeJacobian() * q1;
+  Quaternion q4 = q1.AttitudeJacobian() * v;
   EXPECT_TRUE(q3.IsApprox(q4));
+}
+
+TEST(QuaternionClass, RotationFromMats) {
+  sfloat angle = M_PI / 3;
+  Vec3 axis = Vec3(1, 2, 3).Normalize();
+  Quaternion q1 = Quaternion::FromAxisAngle(angle, axis);
+  Vec3 x = {1, -2, 3};
+  Mat4 L = q1.L();
+  Mat4 R = q1.R();
+  Mat43 H = q1.H();
+
+  Vec3 x_rotated = q1.RotateActive(x);
+  Vec3 x_rotated2 = Transpose(H) * (L * (Transpose(R) * (H * x)));
+  EXPECT_LT(x_rotated.NormedDifference(x_rotated2), EPS);
 }

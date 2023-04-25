@@ -32,6 +32,13 @@ Quaternion Quaternion::FromAxisAngle(sfloat angle, sfloat x, sfloat y, sfloat z)
   return q;
 }
 
+Quaternion Quaternion::FromAxisAngle(sfloat angle, const Vec3& axis) {
+  Quaternion q;
+  Vec3 phi = angle * axis;
+  star_QuatExpm(q.data(), phi.data());
+  return q;
+}
+
 Quaternion Quaternion::RotX(sfloat angle) {
   Quaternion q;
   star_QuatRotX(q.data(), angle);
@@ -150,6 +157,16 @@ Mat43 Quaternion::AttitudeJacobian() const {
   Mat43 G;
   star_GMat(G.data(), data());
   return G;
+}
+Mat43 Quaternion::H() const {
+  // clang-format off
+  return Mat43::ByRows(
+      0, 0, 0,
+      1, 0, 0,
+      0, 1, 0,
+      0, 0, 1
+  );
+  // clang-format on
 }
 
 }  // namespace star

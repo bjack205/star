@@ -81,4 +81,47 @@ void Mat3::SetDiagonal(sfloat x, sfloat y, sfloat z) {
   star_SetDiagonal33(data_, diag);
 }
 
+Mat3 Mat3::Identity() {
+  Mat3 mat;
+  star_SetIdentity33(mat.data(), 1);
+  return mat;
+}
+
+Mat3 Mat3::Const(sfloat value) {
+  Mat3 mat;
+  star_SetConst33(mat.data(), value);
+  return mat;
+}
+
+Mat3 Mat3::Diagonal(sfloat value) {
+  Mat3 mat;
+  star_SetIdentity33(mat.data(), value);
+  return mat;
+}
+
+Mat3 Mat3::Diagonal(const Mat3& m) {
+  Mat3 mat;
+  Vec3 diag = m.GetDiagonal();
+  star_SetDiagonal33(mat.data(), diag.data());
+  return mat;
+}
+
+Mat3 Mat3::Diagonal(sfloat x, sfloat y, sfloat z) {
+  Mat3 mat;
+  sfloat diag[3] = {x, y, z};
+  star_SetDiagonal33(mat.data(), diag);
+  return mat;
+}
+
+Mat3 Mat3::Transpose() const {
+  Mat3 mat;
+  star_Transpose33(mat.data(), data_);
+  return mat;
+}
+
+Mat3& Mat3::TransposeInPlace() {
+  star_TransposeInPlace33(data_);
+  return *this;
+}
+
 }  // namespace star

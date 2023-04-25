@@ -17,7 +17,7 @@ class Vec4 {
   /* Constructors                    */
   /*---------------------------------*/
   Vec4() = default;
-  Vec4(sfloat w, sfloat x, sfloat y, sfloat z) : w(w),  x(x), y(y), z(z) {}
+  Vec4(sfloat w, sfloat x, sfloat y, sfloat z) : w(w), x(x), y(y), z(z) {}
 
   template <class Vector>
   Vec4(Vector v) : w(v[0]), x(v[1]), y(v[2]), z(v[3]) {}
@@ -44,6 +44,7 @@ class Vec4 {
   Vec4 Normalize() const;
   Vec4& NormalizeInPlace();
   sfloat Dot(const Vec4& y) const;
+  sfloat NormedDifference(const Vec4& other) const;
 
   /*---------------------------------*/
   /* Element-wise operations         */
@@ -61,7 +62,6 @@ class Vec4 {
   Vec4 UnaryMap(sfloat (*function)(sfloat)) const;
   Vec4 BinaryMap(const Vec4& y, sfloat (*function)(sfloat, sfloat)) const;
 
-
   Vec4 operator+(const Vec4& rhs) const { return this->Add(rhs); }
   Vec4 operator-(const Vec4& rhs) const { return this->Sub(rhs); }
   Vec4 operator*(const Vec4& rhs) const { return this->Mul(rhs); }
@@ -72,11 +72,22 @@ class Vec4 {
   Vec4& operator*=(const Vec4& rhs) { return this->MulInPlace(rhs); };
   Vec4& operator/=(const Vec4& rhs) { return this->DivInPlace(rhs); };
 
+  // Scalar operators
+  Vec4 operator+(sfloat rhs) const { return this->Add(Const(rhs)); }
+  Vec4 operator-(sfloat rhs) const { return this->Sub(Const(rhs)); }
+  Vec4 operator*(sfloat rhs) const { return this->Mul(Const(rhs)); }
+  Vec4 operator/(sfloat rhs) const { return this->Div(Const(rhs)); }
+
+  Vec4& operator+=(sfloat rhs) { return this->AddInPlace(Const(rhs)); };
+  Vec4& operator-=(sfloat rhs) { return this->SubInPlace(Const(rhs)); };
+  Vec4& operator*=(sfloat rhs) { return this->MulInPlace(Const(rhs)); };
+  Vec4& operator/=(sfloat rhs) { return this->DivInPlace(Const(rhs)); };
+
   /*---------------------------------*/
   /* Data Access                     */
   /*---------------------------------*/
-  sfloat *data() { return &w; }
-  const sfloat *data() const { return &w; }
+  sfloat* data() { return &w; }
+  const sfloat* data() const { return &w; }
   sfloat& operator[](size_t index) { return (&w)[index]; }
   const sfloat& operator[](size_t index) const { return (&w)[index]; }
 
@@ -97,5 +108,11 @@ class Vec4 {
     sfloat z;
   };
 };
+
+static inline Vec4 operator+(sfloat lhs, const Vec4& rhs) { return rhs + lhs; }
+static inline Vec4 operator-(sfloat lhs, const Vec4& rhs) { return rhs - lhs; }
+static inline Vec4 operator*(sfloat lhs, const Vec4& rhs) { return rhs * lhs; }
+static inline Vec4 operator/(sfloat lhs, const Vec4& rhs) { return rhs / lhs; }
+
 
 }  // namespace star

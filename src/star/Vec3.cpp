@@ -27,6 +27,10 @@ Vec3& Vec3::NormalizeInPlace() {
 
 sfloat Vec3::Dot(const Vec3& y) const { return star_Dot3(data(), y.data()); }
 
+sfloat Vec3::NormedDifference(const Vec3& other) const {
+  return (*this - other).Norm();
+}
+
 Vec3 Vec3::Add(const Vec3& y) const {
   Vec3 out;
   star_Add3(out.data(), data(), y.data());

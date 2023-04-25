@@ -41,7 +41,6 @@ class Mat3 {
                      sfloat x20, sfloat x21, sfloat x22);
   static Mat3 Zero();
   static Mat3 Identity();
-  static Mat3 Identity(sfloat value);
   static Mat3 Const(sfloat value);
   static Mat3 Diagonal(sfloat value);
   static Mat3 Diagonal(const Mat3& m);
@@ -90,6 +89,8 @@ class Mat3 {
   /*-------------------------------------
    * Linear Algebra
    *-----------------------------------*/
+  Mat3 Transpose() const;
+  Mat3& TransposeInPlace();
   // TODO: Add linear algebra
 
  private:

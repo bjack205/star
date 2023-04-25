@@ -20,7 +20,7 @@ class Vec3 {
   Vec3(sfloat x, sfloat y, sfloat z) : x(x), y(y), z(z) {}
 
   template <class Vector>
-  Vec3(Vector v) : x(v[0]), y(v[1]), z(v[2]) {}
+  explicit Vec3(Vector v) : x(v[0]), y(v[1]), z(v[2]) {}
 
   /*---------------------------------*/
   /* Static Methods                  */
@@ -47,6 +47,7 @@ class Vec3 {
   Vec3 Normalize() const;
   Vec3& NormalizeInPlace();
   sfloat Dot(const Vec3& y) const;
+  sfloat NormedDifference(const Vec3& other) const;
 
   /*---------------------------------*/
   /* Element-wise operations         */
@@ -73,6 +74,11 @@ class Vec3 {
   Vec3& operator-=(const Vec3& rhs) { return this->SubInPlace(rhs); };
   Vec3& operator*=(const Vec3& rhs) { return this->MulInPlace(rhs); };
   Vec3& operator/=(const Vec3& rhs) { return this->DivInPlace(rhs); };
+
+  Vec3 operator+(sfloat alpha) const { return this->Add({alpha, alpha, alpha}); }
+  Vec3 operator-(sfloat alpha) const { return this->Sub({alpha, alpha, alpha}); }
+  Vec3 operator*(sfloat alpha) const { return this->Mul({alpha, alpha, alpha}); }
+  Vec3 operator/(sfloat alpha) const { return this->Div({alpha, alpha, alpha}); }
 
   template <class T>
   Vec3& operator+=(T alpha) {
@@ -115,5 +121,11 @@ class Vec3 {
   sfloat y;
   sfloat z;
 };
+
+static inline Vec3 operator+(sfloat alpha, const Vec3& rhs) { return rhs + alpha; }
+static inline Vec3 operator-(sfloat alpha, const Vec3& rhs) { return rhs - alpha; }
+static inline Vec3 operator*(sfloat alpha, const Vec3& rhs) { return rhs * alpha; }
+static inline Vec3 operator/(sfloat alpha, const Vec3& rhs) { return rhs / alpha; }
+
 
 }  // namespace star

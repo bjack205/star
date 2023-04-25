@@ -5,6 +5,8 @@
 
 #include "matrix3.h"
 
+#define IDX(i, j) ((i) + 3 * (j))
+
 void star_SetZero33(sfloat mat[9]) {
   mat[0] = 0;
   mat[1] = 0;
@@ -156,4 +158,42 @@ void star_LowerTriSolve33(sfloat* x, const sfloat* L, const sfloat* b) {
 sfloat star_Det33(const sfloat* mat) {
   return mat[0] * mat[4] * mat[8] + mat[3] * mat[7] * mat[2] + mat[6] * mat[1] * mat[5] -
          mat[6] * mat[4] * mat[2] - mat[0] * mat[7] * mat[5] - mat[3] * mat[1] * mat[8];
+}
+
+void star_Copy33(sfloat* dst, const sfloat* src) {
+  dst[0] = src[0];
+  dst[1] = src[1];
+  dst[2] = src[2];
+  dst[3] = src[3];
+  dst[4] = src[4];
+  dst[5] = src[5];
+  dst[6] = src[6];
+  dst[7] = src[7];
+  dst[8] = src[8];
+}
+
+void star_Transpose33(sfloat* dst, const sfloat* src) {
+  dst[IDX(0, 0)] = src[IDX(0, 0)];
+  dst[IDX(0, 1)] = src[IDX(1, 0)];
+  dst[IDX(0, 2)] = src[IDX(2, 0)];
+  dst[IDX(1, 0)] = src[IDX(0, 1)];
+  dst[IDX(1, 1)] = src[IDX(1, 1)];
+  dst[IDX(1, 2)] = src[IDX(2, 1)];
+  dst[IDX(2, 0)] = src[IDX(0, 2)];
+  dst[IDX(2, 1)] = src[IDX(1, 2)];
+  dst[IDX(2, 2)] = src[IDX(2, 2)];
+}
+
+void star_TransposeInPlace33(sfloat* mat) {
+  sfloat tmp = mat[IDX(0, 1)];
+  mat[IDX(0, 1)] = mat[IDX(1, 0)];
+  mat[IDX(1, 0)] = tmp;
+
+  tmp = mat[IDX(0, 2)];
+  mat[IDX(0, 2)] = mat[IDX(2, 0)];
+  mat[IDX(2, 0)] = tmp;
+
+  tmp = mat[IDX(1, 2)];
+  mat[IDX(1, 2)] = mat[IDX(2, 1)];
+  mat[IDX(2, 1)] = tmp;
 }

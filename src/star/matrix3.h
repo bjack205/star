@@ -17,6 +17,7 @@ void star_SetIdentity33(sfloat mat[9], sfloat value);
 void star_SetDiagonal33(sfloat mat[9], const sfloat diag[3]);
 void star_Copy33(sfloat dst[9], const sfloat src[9]);
 void star_Transpose33(sfloat dst[9], const sfloat src[9]);
+void star_TransposeInPlace33(sfloat mat[9]);
 
 /*---------------------------------*/
 /* Multiplication                  */

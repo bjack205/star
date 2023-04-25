@@ -28,6 +28,11 @@ Vec4& Vec4::NormalizeInPlace() {
 
 sfloat Vec4::Dot(const Vec4& y) const { return star_Dot4(data(), y.data()); }
 
+sfloat Vec4::NormedDifference(const Vec4& other) const {
+  return (*this - other).Norm();
+}
+
+
 Vec4 Vec4::Add(const Vec4& y) const {
   Vec4 out;
   star_Add4(out.data(), data(), y.data());
