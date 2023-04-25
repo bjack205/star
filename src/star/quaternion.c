@@ -25,9 +25,7 @@ double star_QuatVecNormSquared(const double* q) {
   return q[1] * q[1] + q[2] * q[2] + q[3] * q[3];
 }
 
-double star_PrincipalAngle(const double* q) {
-  return 2 * atan2(star_QuatVecNorm(q), q[0]);
-}
+double star_PrincipalAngle(const double* q) { return 2 * atan2(star_QuatVecNorm(q), q[0]); }
 
 double star_QuatAngleBetween(const double* q1, const double* q2) {
   double dq[4];
@@ -311,6 +309,10 @@ void star_QuatToRotMatPassive(double* Q, const double* q) {
   Q[6 + 2] = ww - xx - yy + zz;
 }
 
+/////////////////////////////////////////////
+// Matrices
+/////////////////////////////////////////////
+
 void qmat_skewmat(double* S, const double* x) {
   S[0] = 0.0;
   S[1] = +x[2];
@@ -592,4 +594,99 @@ void star_QuatToEulerZYX(double* e, const double* q) {
   e[0] = atan2(Q21, Q11);
   e[1] = atan2(-Q31, sqrt(Q32 * Q32 + Q33 * Q33));
   e[2] = atan2(Q32, Q33);
+}
+
+void star_SkewSymmetricMatrix(double* S, const double* x) {
+  S[0] = 0;
+  S[1] = x[2];
+  S[2] = -x[1];
+
+  S[3] = -x[2];
+  S[4] = 0;
+  S[5] = x[0];
+
+  S[6] = x[1];
+  S[7] = -x[0];
+  S[8] = 0;
+}
+
+void star_LMat(double* L, const double* q) {
+  // L = [ s -v;
+  //       v s*I + skew(v) ]
+  double s = q[0];
+  double x = q[1];
+  double y = q[2];
+  double z = q[3];
+
+  L[0] = s;
+  L[1] = x;
+  L[2] = y;
+  L[3] = z;
+
+  L[4] = -x;
+  L[5] = s;
+  L[6] = z;
+  L[7] = -y;
+
+  L[8] = -y;
+  L[9] = -z;
+  L[10] = s;
+  L[11] = x;
+
+  L[12] = -z;
+  L[13] = y;
+  L[14] = -x;
+  L[15] = s;
+}
+
+void star_RMat(double* R, const double* q) {
+  // R = [ s -v;
+  //       v s*I - skew(v) ]
+  double s = q[0];
+  double x = q[1];
+  double y = q[2];
+  double z = q[3];
+
+  R[0] = s;
+  R[1] = x;
+  R[2] = y;
+  R[3] = z;
+
+  R[4] = -x;
+  R[5] = s;
+  R[6] = -z;
+  R[7] = y;
+
+  R[8] = -y;
+  R[9] = z;
+  R[10] = s;
+  R[11] = -x;
+
+  R[12] = -z;
+  R[13] = -y;
+  R[14] = x;
+  R[15] = s;
+}
+
+void star_GMat(double* G, const double* q) {
+  double s = q[0];
+  double x = q[1];
+  double y = q[2];
+  double z = q[3];
+
+  G[0] = -x;
+  G[1] = s;
+  G[2] = z;
+  G[3] = -y;
+
+  G[4] = -y;
+  G[5] = -z;
+  G[6] = s;
+  G[7] = x;
+
+  G[8] = -z;
+  G[9] = y;
+  G[10] = -x;
+  G[11] = s;
+
 }

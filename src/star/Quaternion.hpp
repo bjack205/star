@@ -9,16 +9,14 @@
 #include <cstdint>
 #include <memory>
 
+#include "star/Mat3.hpp"
+#include "star/Mat4.hpp"
+#include "star/Mat43.hpp"
 #include "star/Vec3.hpp"
 #include "star/Vec4.hpp"
 #include "star/typedefs.h"
 
 namespace star {
-
-class Matrix3;
-class Matrix4;
-class Matrix43;
-class Matrix34;
 
 class Quaternion : public Vec4 {
  public:
@@ -77,15 +75,15 @@ class Quaternion : public Vec4 {
   /*---------------------------------*/
   /* Jacobians                       */
   /*---------------------------------*/
-  Matrix34 RotActiveJacobian(const Vec3&) const;
-  Matrix34 RotPassiveJacobian(const Vec3&) const;
-  Matrix43 AttitudeJacobian() const;
+//  Matrix34 RotActiveJacobian(const Vec3&) const;
+//  Matrix34 RotPassiveJacobian(const Vec3&) const;
+  Mat43 AttitudeJacobian() const;
 
   /*---------------------------------*/
   /* Matrices                       */
   /*---------------------------------*/
-  Matrix4 L() const;
-  Matrix4 R() const;
+  Mat4 L() const;
+  Mat4 R() const;
 
   /*---------------------------------*/
   /* Comparison                      */

@@ -68,7 +68,7 @@ void star_QuatRotatePassiveJacobian(double* D, const double* q, const double* x)
 void star_SkewSymmetricMatrix(double* S, const double* x);
 void star_LMat(double* L, const double* q);
 void star_RMat(double* R, const double* q);
-void star_GMat(double* G, double* q);
+void star_GMat(double* G, const double* q);
 
 
 

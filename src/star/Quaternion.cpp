@@ -134,4 +134,22 @@ bool Quaternion::IsApprox(const Quaternion& rhs, sfloat tol) const {
   return star_QuatAngleBetween(data(), rhs.data()) < tol;
 }
 
+Mat4 Quaternion::L() const {
+  Mat4 L;
+  star_LMat(L.data(), data());
+  return L;
+}
+
+Mat4 Quaternion::R() const {
+  Mat4 R;
+  star_RMat(R.data(), data());
+  return R;
+}
+
+Mat43 Quaternion::AttitudeJacobian() const {
+  Mat43 G;
+  star_GMat(G.data(), data());
+  return G;
+}
+
 }  // namespace star

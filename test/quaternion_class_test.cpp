@@ -10,7 +10,9 @@
 #include <vector>
 
 #include "star/Quaternion.hpp"
+#include "star/Transpose.hpp"
 #include "star/Vec3.hpp"
+#include "star/matrix_multiplication.hpp"
 
 #define EPS 1e-8
 
@@ -133,4 +135,43 @@ TEST(QuaternionClass, AngleBetween) {
   phi *= angle;
   Quaternion q2 = q.Compose(Quaternion::Expm(phi));
   EXPECT_FLOAT_EQ(q.AngleBetween(q2), angle);
+}
+
+TEST(QuaternionClass, LMat) {
+  Quaternion q1 = {1, 2, 3, 4};
+  q1.NormalizeInPlace();
+  Quaternion q2 = {5, 6, 7, 8};
+  q2.NormalizeInPlace();
+  Quaternion q3 = q1.Compose(q2);
+  Quaternion q4 = q1.L() * q2;
+  EXPECT_TRUE(q3.IsApprox(q4));
+
+  q3 = q1.Inverse().Compose(q2);
+  Mat4 L = q1.L();
+  q4 = Transpose(L) * q2;
+  EXPECT_TRUE(q3.IsApprox(q4));
+}
+
+TEST(QuaternionClass, RMat) {
+  Quaternion q1 = {1, 2, 3, 4};
+  q1.NormalizeInPlace();
+  Quaternion q2 = {5, 6, 7, 8};
+  q2.NormalizeInPlace();
+  Quaternion q3 = q1.Compose(q2);
+  Quaternion q4 = q2.R() * q1;
+  EXPECT_TRUE(q3.IsApprox(q4));
+
+  q3 = q1.Compose(q2.Inverse());
+  Mat4 R = q2.R();
+  q4 = Transpose(R) * q1;
+  EXPECT_TRUE(q3.IsApprox(q4));
+}
+
+TEST(QuaternionClass, GMat) {
+  Quaternion q1 = {1, 2, 3, 4};
+  q1.NormalizeInPlace();
+  Vec3 v = {5, 6, 7};
+  Quaternion q3 = q1.ComposePure(v);
+  Quaternion q4 = q1.AttitudeJacobian() * q1;
+  EXPECT_TRUE(q3.IsApprox(q4));
 }
