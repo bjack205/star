@@ -20,57 +20,57 @@ Vec3 Vec3::Normalize() const {
   return out;
 }
 
-Vec3& Vec3::NormalizeInPlace() {
+Vec3 &Vec3::NormalizeInPlace() {
   star_Normalize3(data(), data());
   return *this;
 }
 
-sfloat Vec3::Dot(const Vec3& y) const { return star_Dot3(data(), y.data()); }
+sfloat Vec3::Dot(const Vec3 &y) const { return star_Dot3(data(), y.data()); }
 
-sfloat Vec3::NormedDifference(const Vec3& other) const {
+sfloat Vec3::NormedDifference(const Vec3 &other) const {
   return (*this - other).Norm();
 }
 
-Vec3 Vec3::Add(const Vec3& y) const {
+Vec3 Vec3::Add(const Vec3 &y) const {
   Vec3 out;
   star_Add3(out.data(), data(), y.data());
   return out;
 }
 
-Vec3 Vec3::Sub(const Vec3& y) const {
+Vec3 Vec3::Sub(const Vec3 &y) const {
   Vec3 out;
   star_Sub3(out.data(), data(), y.data());
   return out;
 }
 
-Vec3 Vec3::Mul(const Vec3& y) const {
+Vec3 Vec3::Mul(const Vec3 &y) const {
   Vec3 out;
   star_Mul3(out.data(), data(), y.data());
   return out;
 }
 
-Vec3 Vec3::Div(const Vec3& y) const {
+Vec3 Vec3::Div(const Vec3 &y) const {
   Vec3 out;
   star_Div3(out.data(), data(), y.data());
   return out;
 }
 
-Vec3& Vec3::AddInPlace(const Vec3& y) {
+Vec3 &Vec3::AddInPlace(const Vec3 &y) {
   star_Add3(data(), data(), y.data());
   return *this;
 }
 
-Vec3& Vec3::SubInPlace(const Vec3& y) {
+Vec3 &Vec3::SubInPlace(const Vec3 &y) {
   star_Sub3(data(), data(), y.data());
   return *this;
 }
 
-Vec3& Vec3::MulInPlace(const Vec3& y) {
+Vec3 &Vec3::MulInPlace(const Vec3 &y) {
   star_Mul3(data(), data(), y.data());
   return *this;
 }
 
-Vec3& Vec3::DivInPlace(const Vec3& y) {
+Vec3 &Vec3::DivInPlace(const Vec3 &y) {
   star_Div3(data(), data(), y.data());
   return *this;
 }
@@ -81,7 +81,7 @@ Vec3 Vec3::UnaryMap(sfloat (*function)(sfloat)) const {
   return out;
 }
 
-Vec3 Vec3::BinaryMap(const star::Vec3& y, sfloat (*function)(sfloat, sfloat)) const {
+Vec3 Vec3::BinaryMap(const star::Vec3 &y, sfloat (*function)(sfloat, sfloat)) const {
   Vec3 out;
   star_BinaryMap(out.data(), data(), y.data(), function);
   return out;
@@ -93,6 +93,12 @@ void Vec3::SetConst(sfloat value) {
 
 void Vec3::SetZero() {
   star_SetZero(data());
+}
+
+Vec3 Vec3::Cross(const Vec3 &y) const {
+  Vec3 x_cross_y;
+  star_Cross(x_cross_y.data(), data(), y.data());
+  return x_cross_y;
 }
 
 }  // namespace star

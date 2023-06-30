@@ -85,6 +85,12 @@ sfloat star_Dot3(const sfloat x[3], const sfloat y[3]) {
   return x[0] * y[0] + x[1] * y[1] + x[2] * y[2];
 }
 
+void star_Cross(sfloat out[3], const sfloat x[3], const sfloat y[3]) {
+  out[0] = x[1] * y[2] - x[2] * y[1];
+  out[1] = x[2] * y[0] - x[0] * y[2];
+  out[2] = x[0] * y[1] - x[1] * y[0];
+}
+
 /*---------------------------------*/
 /* Element-wise operations         */
 /*---------------------------------*/

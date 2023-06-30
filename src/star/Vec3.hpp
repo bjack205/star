@@ -49,6 +49,8 @@ class Vec3 {
   sfloat Dot(const Vec3& y) const;
   sfloat NormedDifference(const Vec3& other) const;
 
+  Vec3 Cross(const Vec3& y) const;
+
   /*---------------------------------*/
   /* Element-wise operations         */
   /*---------------------------------*/

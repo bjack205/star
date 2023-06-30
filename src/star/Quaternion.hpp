@@ -30,8 +30,8 @@ class Quaternion : public Vec4 {
   Quaternion(sfloat w, const Vec3& v) : Vec4(w, v[0], v[1], v[2]) {}
   Quaternion(Vec4 v);  // NOLINT: Allow implicit conversion
 
-  template <class Vector>
-  explicit Quaternion(const Vector& v) : Vec4(v) {}
+//  template <class Vector>
+//  explicit Quaternion(const Vector& v) : Vec4(v) {}
 
   /*---------------------------------*/
   /* Static Methods                  */
