@@ -14,7 +14,7 @@
 void star_SetZero43(sfloat mat[12]);
 void star_SetConst43(sfloat mat[12], sfloat value);
 void star_Copy43(sfloat dst[12], const sfloat src[12]);
-void star_Transpose43(sfloat dst[12], const sfloat src[12]);
+//void star_Transpose43(sfloat dst[12], const sfloat src[12]);
 
 /*---------------------------------*/
 /* Multiplication                  */

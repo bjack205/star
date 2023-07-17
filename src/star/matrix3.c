@@ -49,7 +49,7 @@ void star_SetDiagonal33(sfloat mat[9], const sfloat diag[3]) {
   mat[8] = diag[2];
 }
 
-void star_MatMul33(sfloat* C, const sfloat* A, const sfloat* B) {
+void star_MatMul33(sfloat C[9], const sfloat A[9], const sfloat B[9]) {
   C[0] = A[0] * B[0] + A[3] * B[1] + A[6] * B[2];
   C[1] = A[1] * B[0] + A[4] * B[1] + A[7] * B[2];
   C[2] = A[2] * B[0] + A[5] * B[1] + A[8] * B[2];
@@ -73,7 +73,7 @@ void star_TransposedMatMul33(sfloat C[9], const sfloat At[9], const sfloat B[9])
   C[8] = At[6] * B[6] + At[7] * B[7] + At[8] * B[8];
 }
 
-void star_MatMulTransposed33(sfloat* C, const sfloat* A, const sfloat* Bt) {
+void star_MatMulTransposed33(sfloat C[9], const sfloat A[9], const sfloat Bt[9]) {
   C[0] = A[0] * Bt[0] + A[3] * Bt[3] + A[6] * Bt[6];
   C[1] = A[1] * Bt[0] + A[4] * Bt[3] + A[7] * Bt[6];
   C[2] = A[2] * Bt[0] + A[5] * Bt[3] + A[8] * Bt[6];
@@ -85,7 +85,7 @@ void star_MatMulTransposed33(sfloat* C, const sfloat* A, const sfloat* Bt) {
   C[8] = A[2] * Bt[2] + A[5] * Bt[5] + A[8] * Bt[8];
 }
 
-void star_VecMul33(sfloat* y, const sfloat* A, const sfloat* x) {
+void star_VecMul33(sfloat y[3], const sfloat A[9], const sfloat x[3]) {
   // Extract out x so that x and y can be aliased
   sfloat x0 = x[0];
   sfloat x1 = x[1];
@@ -107,7 +107,7 @@ void star_TransposedVecMul33(sfloat y[3], const sfloat At[9], const sfloat x[3])
   y[2] = At[6] * x0 + At[7] * x1 + At[8] * x2;
 }
 
-void star_UpperMatMul33(sfloat* C, const sfloat* U, const sfloat* A) {
+void star_UpperMatMul33(sfloat C[9], const sfloat U[9], const sfloat A[9]) {
   C[0] = U[0] * A[0] + U[3] * A[1] + U[6] * A[2];
   C[1] = U[4] * A[1] + U[7] * A[2];
   C[2] = U[8] * A[2];
@@ -119,13 +119,13 @@ void star_UpperMatMul33(sfloat* C, const sfloat* U, const sfloat* A) {
   C[8] = U[8] * A[8];
 }
 
-void star_UpperVecMul33(sfloat* C, const sfloat* U, const sfloat* x) {
-  C[0] = U[0] * x[0] + U[3] * x[1] + U[6] * x[2];
-  C[1] = U[4] * x[1] + U[7] * x[2];
-  C[2] = U[8] * x[2];
+void star_UpperVecMul33(sfloat y[3], const sfloat U[9], const sfloat x[3]) {
+  y[0] = U[0] * x[0] + U[3] * x[1] + U[6] * x[2];
+  y[1] = U[4] * x[1] + U[7] * x[2];
+  y[2] = U[8] * x[2];
 }
 
-void star_LowerMatMul33(sfloat* C, const sfloat* L, const sfloat* A) {
+void star_LowerMatMul33(sfloat C[9], const sfloat L[9], const sfloat A[9]) {
   C[0] = L[0] * A[0];
   C[1] = L[1] * A[0] + L[4] * A[1];
   C[2] = L[2] * A[0] + L[5] * A[1] + L[8] * A[2];
@@ -137,30 +137,30 @@ void star_LowerMatMul33(sfloat* C, const sfloat* L, const sfloat* A) {
   C[8] = L[2] * A[6] + L[5] * A[7] + L[8] * A[8];
 }
 
-void star_LowerVecMul33(sfloat* C, const sfloat* L, const sfloat* x) {
-  C[0] = L[0] * x[0];
-  C[1] = L[1] * x[0] + L[4] * x[1];
-  C[2] = L[2] * x[0] + L[5] * x[1] + L[8] * x[2];
+void star_LowerVecMul33(sfloat y[3], const sfloat L[9], const sfloat x[3]) {
+  y[0] = L[0] * x[0];
+  y[1] = L[1] * x[0] + L[4] * x[1];
+  y[2] = L[2] * x[0] + L[5] * x[1] + L[8] * x[2];
 }
 
-void star_UpperTriSolve33(sfloat* x, const sfloat* U, const sfloat* b) {
+void star_UpperTriSolve33(sfloat x[3], const sfloat U[9], const sfloat b[3]) {
   x[2] = b[2] / U[8];
   x[1] = (b[1] - U[7] * x[2]) / U[4];
   x[0] = (b[0] - U[3] * x[1] - U[6] * x[2]) / U[0];
 }
 
-void star_LowerTriSolve33(sfloat* x, const sfloat* L, const sfloat* b) {
+void star_LowerTriSolve33(sfloat x[3], const sfloat L[9], const sfloat b[3]) {
   x[0] = b[0] / L[0];
   x[1] = (b[1] - L[1] * x[0]) / L[4];
   x[2] = (b[2] - L[2] * x[0] - L[5] * x[1]) / L[8];
 }
 
-sfloat star_Det33(const sfloat* mat) {
+sfloat star_Det33(const sfloat mat[9]) {
   return mat[0] * mat[4] * mat[8] + mat[3] * mat[7] * mat[2] + mat[6] * mat[1] * mat[5] -
          mat[6] * mat[4] * mat[2] - mat[0] * mat[7] * mat[5] - mat[3] * mat[1] * mat[8];
 }
 
-void star_Copy33(sfloat* dst, const sfloat* src) {
+void star_Copy33(sfloat dst[9], const sfloat src[9]) {
   dst[0] = src[0];
   dst[1] = src[1];
   dst[2] = src[2];
@@ -172,7 +172,7 @@ void star_Copy33(sfloat* dst, const sfloat* src) {
   dst[8] = src[8];
 }
 
-void star_Transpose33(sfloat* dst, const sfloat* src) {
+void star_Transpose33(sfloat dst[9], const sfloat src[9]) {
   dst[IDX(0, 0)] = src[IDX(0, 0)];
   dst[IDX(0, 1)] = src[IDX(1, 0)];
   dst[IDX(0, 2)] = src[IDX(2, 0)];
@@ -184,7 +184,7 @@ void star_Transpose33(sfloat* dst, const sfloat* src) {
   dst[IDX(2, 2)] = src[IDX(2, 2)];
 }
 
-void star_TransposeInPlace33(sfloat* mat) {
+void star_TransposeInPlace33(sfloat mat[9]) {
   sfloat tmp = mat[IDX(0, 1)];
   mat[IDX(0, 1)] = mat[IDX(1, 0)];
   mat[IDX(1, 0)] = tmp;

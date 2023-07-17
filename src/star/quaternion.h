@@ -27,12 +27,12 @@ void star_QuatComposeLeft(double q21[4], const double q1[4], const double q2[4])
 void star_QuatDiff(double dq[4], const double q1[4], const double q2[4]);
 
 // Operations on vectors
-void star_QuatLogm(double phi[4], const double q[4]);
+void star_QuatLogm(double phi[3], const double q[4]);
 void star_QuatLog(double q_log[4], const double q[4]);
 void star_QuatExpm(double q[4], const double phi[3]);
-void star_QuatExp(double q_exp[4], const double q[3]);
-void star_QuatRotateActive(double v_rot[4], const double q[4], const double v[3]);
-void star_QuatRotatePassive(double* v_rot, const double q[3], const double v[3]);
+void star_QuatExp(double q_exp[4], const double q[4]);
+void star_QuatRotateActive(double v_rot[3], const double q[4], const double v[3]);
+void star_QuatRotatePassive(double v_rot[3], const double q[4], const double v[3]);
 void star_QuatPure(double q[4], const double x[3]);
 void star_QuatComposePure(double qv[4], const double q[4], const double v[3]);
 
@@ -61,20 +61,20 @@ void star_QuatRotY(double q[4], double angle);
 void star_QuatRotZ(double q[4], double angle);
 
 // Jacobians
-void star_QuatRotateActiveJacobian(double* D, const double* q, const double* x);
-void star_QuatRotatePassiveJacobian(double* D, const double* q, const double* x);
+void star_QuatRotateActiveJacobian(double* D, const double q[4], const double x[3]);
+void star_QuatRotatePassiveJacobian(double* D, const double q[4], const double x[3]);
 
 // Matrices
-void star_SkewSymmetricMatrix(double* S, const double* x);
-void star_LMat(double* L, const double* q);
-void star_RMat(double* R, const double* q);
-void star_GMat(double* G, const double* q);
+void star_SkewSymmetricMatrix(double S[9], const double x[3]);
+void star_LMat(double L[16], const double q[4]);
+void star_RMat(double R[16], const double q[4]);
+void star_GMat(double G[12], const double q[4]);
 
 
 
-void qmat_err(double* phi, const double* q1, const double* q2);
-void qmat_adderr(double* q, const double* q0, const double* phi);
+void qmat_err(double phi[3], const double q1[4], const double q2[4]);
+void qmat_adderr(double q[4], const double q0[4], const double phi[3]);
 
-void qmat_cay(double* q, const double* phi);
-void qmat_icay(double* phi, const double* q);
-void qmat_dcay(double* D, const double* phi);
+void qmat_cay(double q[4], const double phi[3]);
+void qmat_icay(double phi[3], const double q[4]);
+void qmat_dcay(double* D, const double phi[3]);

@@ -3,7 +3,6 @@
 // Copyright (c) 2023. All rights reserved.
 //
 
-#include <fmt/core.h>
 #include <gtest/gtest.h>
 
 #include "star/RotMat.hpp"

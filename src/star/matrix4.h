@@ -13,7 +13,7 @@
 
 void star_SetZero44(sfloat mat[16]);
 void star_SetConst44(sfloat mat[16], sfloat value);
-void star_SetIdentity44(sfloat* mat, sfloat val);
+void star_SetIdentity44(sfloat mat[16], sfloat val);
 void star_SetDiagonal44(sfloat mat[16], const sfloat diag[4]);
 void star_Copy44(sfloat dst[16], const sfloat src[16]);
 void star_Transpose44(sfloat dst[16], const sfloat src[16]);

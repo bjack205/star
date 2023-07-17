@@ -88,7 +88,7 @@ class Vec3 {
     y += alpha;
     z += alpha;
     return *this;
-  };
+  }
   template <class T>
   Vec3& operator-=(T alpha) {
     x -= alpha;

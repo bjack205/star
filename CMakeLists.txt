@@ -70,6 +70,7 @@ endif ()
 
 # Add compile options
 if (NOT WIN32)
+  message(STATUS "Adding compile options")
   add_compile_options(-Wall -Wextra -pedantic -Werror -save-temps )
   if (STAR_VECTORIZE)
     add_compile_options(-march=native)

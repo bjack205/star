@@ -56,6 +56,7 @@ TEST(Matrix3, SetIdentity) {
 
 TEST(Matrix3, SetDiagonal) {
   sfloat mat[9];
+  star_SetZero33(mat);
   const sfloat diag[3] = {1.2, 2.3, 3.4};
   star_SetDiagonal33(mat, diag);
   EXPECT_EQ(mat[0], diag[0]);

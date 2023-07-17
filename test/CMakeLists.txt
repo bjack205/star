@@ -11,7 +11,6 @@ function (add_star_test name)
     PRIVATE
     star::star++
     gtest::gtest
-    fmt
     )
   if (NOT APPLE AND NOT WIN32)
     target_link_libraries(${TEST_NAME} PUBLIC m)
